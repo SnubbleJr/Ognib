@@ -1,0 +1,10 @@
+Scout`Scout_emblem_RED
+Pyro`Pyro_emblem_RED
+Soldier`Soldier_emblem_RED
+Demoman`Demoman_emblem_RED
+Heavy`Heavy_emblem_RED
+Engineer`Engineer_emblem_RED
+Medic`Medic_emblem_RED
+Sniper`Sniper_emblem_RED
+Spy`Spy_emblem_RED
+NULL`Dominating
