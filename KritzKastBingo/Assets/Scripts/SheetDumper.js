@@ -35,9 +35,9 @@ function Start ()
 {
     filePath = Application.dataPath;
 
-    applySettings();
+    yield applySettings();
 
-    makeLists();
+    yield makeLists();
 
     applyActiveTiles();
     spawnTiles();
@@ -52,6 +52,25 @@ function makeLists()
     makeTileList();
 }
 
+function getWebSettings() : String
+{
+}
+
+function getDiskClasses() : String
+{
+
+}
+
+function getDiskPresenterss() : String
+{
+
+}
+
+function getDiskRuless() : String
+{
+
+}
+
 function applySettings()
 {
     var baseCols : float = 9;
@@ -59,7 +78,12 @@ function applySettings()
     var colRatio : float;
     var rowRatio : float;
 
-    var sr = new File.OpenText(Path.Combine(filePath,"Settings.txt"));
+    var path : String = Path.Combine(filePath,"Settings.txt");
+
+#if UNITY_EDITOR
+    var sr : StreamReader;
+
+    sr = new File.OpenText(path);
     
     line = sr.ReadLine();
  
@@ -76,9 +100,30 @@ function applySettings()
     if (line != null)
         activeTilesPerRow = parseInt(line);
 
-    // Done reading, close the reader
+        // Done reading, close the reader
     sr.Close();
 
+#elif UNITY_WEBPLAYER
+    var str : String;
+    var www : WWW = new WWW (path);
+
+    yield www;
+    
+    str = www.text;
+
+    var lines = str.Split("\n"[0]);
+    
+    if (lines.length > 0)
+        cols = parseInt(lines[0]);
+    
+    if (lines.length > 1)
+        rows = parseInt(lines[1]);
+    
+    if (lines.length > 2)
+        activeTilesPerRow = parseInt(lines[2]);
+
+#endif
+    
     //se we don't err here
     if (activeTilesPerRow > cols)
         activeTilesPerRow = cols;
