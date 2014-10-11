@@ -1,7 +1,7 @@
-General`NULL`KKast
-Special Guest`NULL`KKast
-Agro`Pyro`Agro
-Chronos`Demoman`Chronos
-RuskeyDoo`Heavy`Ruskey
-Sir Grey`Spy`SirG
-Tempest`Soldier`Tempest
+General`NULL`KKast.png
+Special Guest`NULL`KKast.png
+Agro`Pyro`Agro.png
+Chronos`Demoman`Chronos.jpg
+RuskeyDoo`Heavy`Ruskey.jpg
+Sir Grey`Spy`SirG.jpg
+Tempest`Soldier`Tempest.jpg

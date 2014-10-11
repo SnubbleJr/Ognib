@@ -32,13 +32,16 @@ function OnMouseDown ()
         bingoed = true;
         GameObject.FindWithTag("GameController").GetComponent(SheetDumper).stampTile(this.gameObject);
         stamp.active = true;
-        audio.PlayOneShot(mouseD,1);
+		
+		if (SheetDumper.sfx)
+			audio.PlayOneShot(mouseD,1);
     }
 }
 
 function OnMouseUp () 
 {
-    audio.PlayOneShot(mouseU, 1);
+	if (SheetDumper.sfx)
+		audio.PlayOneShot(mouseU, 1);
 }
 
 function OnMouseOver () 
@@ -51,7 +54,8 @@ function OnMouseOver ()
 
     if (!hovering)
     {
-        audio.PlayOneShot(mouseH,1);
+		if (SheetDumper.sfx)
+			audio.PlayOneShot(mouseH,1);
         hovering = true;
     }
 }
@@ -60,11 +64,6 @@ function OnMouseExit ()
 {
     lighty.active = false;
     hovering = false;
-}
-
-function stamped()
-{
-
 }
 
 public function setRule(rule : Rule, index : Vector2)

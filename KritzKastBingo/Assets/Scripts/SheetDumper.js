@@ -4,24 +4,37 @@ import System.IO;
 var tile : GameObject;
 var emptyTile : GameObject;
 
-var cols : int;
-var rows: int;
-var activeTilesPerRow : int;
-
-var scale : float = 1;
-
 var ruleTextLen = 15;
+
+public static var music = true;
+public static var sfx = true;
+
+private var sfxScale = 10;
+
+private var started = false;
+
+private var cols : int;
+private var rows: int;
+private var activeTilesPerRow : int;
+
+private var scale : float = 1;
 
 var tileComplete : AudioClip;
 var rowComplete : AudioClip;
-var GameComplete : AudioClip;
+var gameComplete : AudioClip;
 
 private var filePath : String;
+private var lines = Array();
 private var line : String;
+private var tex : Texture2D;
 
-private var classList = new Array();
-private var presenterList = new Array();
-private var ruleList = new Array();
+private var clas : Class;
+private var presenter : Presenter;
+private var rule : Rule;
+
+private var classList = Array();
+private var presenterList = Array();
+private var ruleList = Array();
 
 private var tileList = Array();
 
@@ -29,7 +42,7 @@ private var completedRows : int = 0;
 
 private var won = false;
 
-//for the p[osisition of the the tiles, have the logic stored in an array, and then just scaled, so 2,4 etc
+//for the posisition of the the tiles, have the logic stored in an array, and then just scaled, so 2,4 etc
 
 function Start ()
 {
@@ -38,93 +51,90 @@ function Start ()
     yield applySettings();
 
     yield makeLists();
-
-    applyActiveTiles();
-    spawnTiles();
+	
+	spawnTiles();
 }
 
 function makeLists()
 {
-    makeClassList();
-    makePresenterList();
-    makeRulesList();
+    yield makeClassList();
+    yield makePresenterList();
+    yield makeRulesList();
 
-    makeTileList();
+	yield makeTileList();
 }
 
-function getWebSettings() : String
+function getWebFile(path : String)
 {
+	var str : String;
+    var www : WWW = new WWW (path);
+
+	lines = Array();
+	
+    yield www;
+    
+    str = www.text;
+	
+	lines = str.Split("\n"[0]);
 }
 
-function getDiskClasses() : String
+function getDiskFile(path : String)
 {
-
+	var sr : StreamReader;
+	
+	lines = Array();
+	
+    sr = new File.OpenText(path);
+	
+	line = sr.ReadLine();
+	
+	while (line != null)
+	{
+		lines.Push(line);
+		line = sr.ReadLine();
+	}
+	
+	// Done reading, close the reader
+    sr.Close();
+	yield;
 }
 
-function getDiskPresenterss() : String
+function getWebTex(path : String)
 {
+    var www : WWW = new WWW (path);
 
-}
-
-function getDiskRuless() : String
-{
-
+    yield www;
+	
+	tex = www.texture;
 }
 
 function applySettings()
 {
+	loadingPrint("Applying Settings...");
+	
     var baseCols : float = 9;
     var baseRows : float = 3;
     var colRatio : float;
     var rowRatio : float;
 
-    var path : String = Path.Combine(filePath,"Settings.txt");
-
+    var path : String = filePath + "/Settings.txt";
+	
 #if UNITY_EDITOR
-    var sr : StreamReader;
-
-    sr = new File.OpenText(path);
-    
-    line = sr.ReadLine();
- 
-    if (line != null)
-        cols = parseInt(line);
-
-    line = sr.ReadLine();
- 
-    if (line != null)
-        rows = parseInt(line);
-
-    line = sr.ReadLine();
- 
-    if (line != null)
-        activeTilesPerRow = parseInt(line);
-
-        // Done reading, close the reader
-    sr.Close();
-
+	yield getDiskFile(path);
 #elif UNITY_WEBPLAYER
-    var str : String;
-    var www : WWW = new WWW (path);
-
-    yield www;
-    
-    str = www.text;
-
-    var lines = str.Split("\n"[0]);
-    
+    yield getWebFile(path);
+#endif
+	
     if (lines.length > 0)
-        cols = parseInt(lines[0]);
+        cols = parseInt(lines[0].ToString());
     
     if (lines.length > 1)
-        rows = parseInt(lines[1]);
+        rows = parseInt(lines[1].ToString());
     
     if (lines.length > 2)
-        activeTilesPerRow = parseInt(lines[2]);
+        activeTilesPerRow = parseInt(lines[2].ToString());
 
-#endif
-    
-    //se we don't err here
+    //so we don't err here
     if (activeTilesPerRow > cols)
         activeTilesPerRow = cols;
 
@@ -140,16 +150,19 @@ function applySettings()
     {
         scale = rowRatio;
     }
+	yield;
 }
 
 function makeTileList()
 {
+	loadingPrint("Making Bingo Sheet...");
+
     var arr1 = Array();
     var arr2 = Array();
 
     for (var j=0; j<cols; j++)
     {
-        arr2.push(false);
+        arr2.push(0);
     }
 
     for (var i=0; i<rows; i++)
@@ -158,6 +171,9 @@ function makeTileList()
     }
 
     tileList = arr1;
+			
+	applyActiveTiles();
+    yield;
 }
 
 //so the array is weird, it's just col * row length but goes r0c0,r0c1,r0c2,r1c0...
@@ -176,164 +192,133 @@ function applyActiveTiles()
         do
         {
             var range : int = Random.Range(0, cols);
-            if (arr[range] == false)
+            if (arr[range] == 0)
             {
-                arr[range] = true;
+                arr[range] = 1;
                 tileList[i] = arr;
                 
                 currentActiveInRow++;;
             }
 
         }
+		
         while (currentActiveInRow < activeTilesPerRow);
-        currentActiveInRow = 0;
+		currentActiveInRow = 0;
     }
 }
 
 function makeClassList()
-{    
-    try
-    {
-        var clas : Class;
+{    	
+	loadingPrint("Getting Class Info...");
 
-        var sr = new File.OpenText(Path.Combine(filePath,"Classes.txt"));
+	var path : String = filePath + "/Classes.txt";
+	
+#if UNITY_EDITOR
+	yield getDiskFile(path);
+#elif UNITY_WEBPLAYER
+    yield getWebFile(path);
+#endif
 
-        do
-        {
-            line = sr.ReadLine();
- 
-            if (line != null)
-            {
-                clas = parseClass(line);
-                if (clas != null)
-                {
-                    classList.push(clas);
-                }
-            }
-        }
-        while (line != null);
- 
-        // Done reading, close the reader
-        sr.Close();
-    }
-        
-    // If anything broke in the try block, we throw an exception with information
-    // on what didn't work
-    catch (e)
-    {
-        print(e.Message);
-    }
+	for(var line in lines)
+	{
+		yield parseClass(line);
+		if (clas != null)
+		{
+			classList.push(clas);
+		}
+	}
 }
 
 function makePresenterList()
 {    
-    try
-    {
-        var presenter : Presenter;
+	loadingPrint("Getting Presenter Info...");
 
-        var sr = new File.OpenText(Path.Combine(filePath,"Presenters.txt"));
+    var path : String = filePath + "/Presenters.txt";
+	
+#if UNITY_EDITOR
+	yield getDiskFile(path);
+#elif UNITY_WEBPLAYER
+    yield getWebFile(path);
+#endif
 
-        do
-        {
-            line = sr.ReadLine();
- 
-            if (line != null)
-            {
-                presenter = parsePresenter(line);
-                if (presenter != null)
-                {
-                    presenterList.push(presenter);
-                }
-            }
-        }
-        while (line != null);
- 
-        // Done reading, close the reader
-        sr.Close();
-    }
-        
-    // If anything broke in the try block, we throw an exception with information
-    // on what didn't work
-    catch (e)
-    {
-        print(e.Message);
-    }
+	for(var line in lines)
+	{
+		yield parsePresenter(line);
+		if (presenter != null)
+		{
+			presenterList.push(presenter);
+		}
+	}
 }
 
 function makeRulesList()
 {    
-    try
-    {
-        var rule : Rule;
+	loadingPrint("Getting Rule Info...");
 
-        var sr = new File.OpenText(Path.Combine(filePath,"Rules.txt"));
+    var path : String = filePath + "/Rules.txt";
+	rule = new Rule();
+	
+#if UNITY_EDITOR
+	yield getDiskFile(path);
+#elif UNITY_WEBPLAYER
+    yield getWebFile(path);
+#endif
 
-        do
-        {
-            line = sr.ReadLine();
- 
-            if (line != null)
-            {
-                rule = parseRule(line);
-                if (rule != null)
-                {
-                    ruleList.push(rule);
-                }
-            }
-        }
-        while (line != null);
- 
-        // Done reading, close the reader
-        sr.Close();
-    }
-        
-    // If anything broke in the try block, we throw an exception with information
-    // on what didn't work
-    catch (e)
-    {
-        print(e.Message);
-    }
+	for(var line in lines)
+	{
+		yield parseRule(line);
+		if (rule != null)
+		{
+			ruleList.push(rule);
+		}
+	}
 }
 
-function parseClass(str : String) : Class
+function parseClass(str : String)
 {
-    var clas : Class = new Class();
-    var subStr : String[];
+    clas = new Class();
+    var subStr = Array();
 
+	var path : String;
+	
     subStr = str.Split("`"[0]);
-
+	
     if(subStr.length > 0)
     {
-        var tex : Texture2D;
-        tex = Resources.Load(subStr[1]);
+		path = filePath + "/" + subStr[1];
 
-        if (tex == null)
-        {
-            return null;
-        }
-        
+#if UNITY_EDITOR
+        tex = Resources.Load(subStr[1]);
+		yield;
+#elif UNITY_WEBPLAYER
+		yield getWebTex(path);
+#endif
+		
         clas.className = subStr[0];
         clas.classIcon = tex;
     }
-    else
-    {
-        return null;
-    }
-
-    return clas;
 }
 
-function parsePresenter(str : String) : Presenter
+function parsePresenter(str : String)
 {
-    var presenter : Presenter = new Presenter();
+    presenter = new Presenter();
     var subStr : String[];
 
+	var path : String;
+	
     subStr = str.Split("`"[0]);
 
     if(subStr.length >= 1)
-    {
+    {	
         //if there's a pic file round here...
-        var tex = Resources.Load(subStr[2]);
+		path = filePath + "/" + subStr[2];
+
+#if UNITY_EDITOR
+        tex = Resources.Load(subStr[2]);
+		yield;
+#elif UNITY_WEBPLAYER
+		yield getWebTex(path);
+#endif
 
         if (tex != null)
         {
@@ -343,17 +328,11 @@ function parsePresenter(str : String) : Presenter
         presenter.name = subStr[0];
         presenter.clas = getClass(subStr[1]);
     }
-    else
-    {
-        return null;
-    }
-
-    return presenter;
 }
 
 function parseRule(str : String) : Rule
 {
-    var rule : Rule = new Rule();
+	rule = new Rule();
     var subStr : String[];
 
     subStr = str.Split("`"[0]);
@@ -365,12 +344,6 @@ function parseRule(str : String) : Rule
         rule.presenter = getPresenter(subStr[0]);
         rule.text = text;
     }
-    else
-    {
-        return null;
-    }
-
-    return rule;
 }
 
 // Wrap text by line height
@@ -454,7 +427,7 @@ function getRule() : Rule
     return rule;
 }
 
-//loop through the tileList and spawn active where true, else false
+//loop through the tileList and spawn active where 1, else 0
 function spawnTiles()
 {    
     for (var i=0; i<rows; i++)
@@ -467,25 +440,29 @@ function spawnTiles()
             var vec : Vector2 = new Vector2(j,i);
 
             //if this requires a rule, and there are rules left
-            if (arr[j] == true)
-            {
-                var rule : Rule = getRule();
+            if (arr[j] == 1)
+            {   
+				var rule : Rule = getRule();
 
                 if (rule != null)
                 {
-                    spawnTile(tile, vec, rule);
+                    yield spawnTile(tile, vec, rule);
                 }
                 else
                 {
-                    spawnTile(emptyTile, vec, null);
+                    yield spawnTile(emptyTile, vec, null);
                 }
             }
             else
             {
-                spawnTile(emptyTile, vec, null);
+                yield spawnTile(emptyTile, vec, null);
             }
         }
     }
+	//initalastion complete
+	started = true;
+	loadingPrint("");
+
 }
 
 //this spawns tiles, based on the co ord (which is it's pos in the array) and the scale, by default, each tile is 10x10, it then offsets it by how big the array is, so the middle tile (or combo of tiles) is 0,0
@@ -507,12 +484,17 @@ function spawnTile(tile : GameObject, position : Vector2, rule : Rule)
 
     if(rule != null)
         newTile.GetComponent(BingoTile).setRule(rule, position);
+	
+	yield;
 }
 
 function Update()
 {
-    rowCheck();
-    winCheck();
+	if (started)
+	{		   
+		rowCheck();
+		winCheck();
+	}
 }
 
 public function stampTile(tile : GameObject)
@@ -522,63 +504,64 @@ public function stampTile(tile : GameObject)
     var arr = [];
 
     arr = tileList[indexY];
-    arr[indexX] = null;
+    arr[indexX] = 2;
 
     tileList[indexY] = arr;
-
-    audio.PlayOneShot(tileComplete, .5);
+	
+	if (sfx)
+		audio.PlayOneShot(tileComplete, .5*sfxScale);
 }
 
 function winCheck()
 {
     //if all the rows are done, and haven't won yet win
-    if (completedRows >= rows && !won)
+    if (completedRows >= rows && !won && activeTilesPerRow != 0)
         win();
 }
 
 //checks if row is done, if it is, delete it
 function rowCheck()
 {
-    var completedTilesInRow : int = 0;
+    var completedTilesInRow : int;
     var completedRow : int = -1;
 
     for (var i=0; i<tileList.length; i++)
     {
         var arr = [];
         arr = tileList[i];
+		
+        completedTilesInRow = 0;
         
         for (var j=0; j<arr.length; j++)
         {
-            var vec : Vector2 = new Vector2(j,i);
-
-            //if it's null, then we've got one that's been set
-            if (arr[j] == null)
+            //if it's 2, then we've got one that's been stamped
+            if (arr[j] == 2)
             {
                 completedTilesInRow++;
             }
         }
 
+		//if the whole row is complete
         if (completedTilesInRow >= activeTilesPerRow)
         {
             completedRow = i;
         }
-
-        completedTilesInRow = 0;
     }
 
-    //we completed a row, set the whole row to false, so it doesn't get picked up again
+    //we completed a row, set the whole row to 0, so it doesn't get picked up again
     if (completedRow >= 0)
     {
         arr = tileList[completedRow];
         
         for (var k=0; k<arr.length; k++)
         {
-            arr[k] = false;
+            arr[k] = 0;
         }
 
         tileList[completedRow] = arr;
-
-        audio.PlayOneShot(rowComplete,0.5);
+		
+		if (sfx)
+			audio.PlayOneShot(rowComplete,0.5*sfxScale);
         completedRows++;
         completedRow = -1;
     }
@@ -587,6 +570,16 @@ function rowCheck()
 function win()
 {
     won = true;
-    audio.PlayOneShot(GameComplete,1.2);
+	
+	if (sfx)
+		audio.PlayOneShot(gameComplete,1.2*sfxScale);
     Camera.main.gameObject.BroadcastMessage("showWin");
+}
+
+function loadingPrint(str : String)
+{
+	var text : TextMesh;
+    text = GameObject.Find("Loading Text").GetComponent(TextMesh);
+	
+	text.text = str;
 }
