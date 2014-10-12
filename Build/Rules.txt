@@ -16,7 +16,11 @@ General`Host is upset about tiny update
 General`Steam mentioned
 General`More than one video of the week
 General`Show notes!
+<<<<<<< HEAD
 General`Cactus is added to Cactus Canyon
+=======
+General`Cactus is added to PL_CcactusCanyon
+>>>>>>> 007f810ed16c2a813d592103e968d1db9e9654b7
 General`Segue is made and then commented apon
 General`Host slurs words
 General`Tangent takes over the conversation
@@ -28,4 +32,8 @@ General`"We're not even through the updates yet"
 General`4 or more hosts on the show
 General`"Fixed" updates
 General`A hat is mentioned by name (not Lo-Fi)
+<<<<<<< HEAD
 General`Medic is not mentioned
+=======
+General`Medic is not mentioned
+>>>>>>> 007f810ed16c2a813d592103e968d1db9e9654b7
