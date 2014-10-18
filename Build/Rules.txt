@@ -31,3 +31,4 @@ General`"Fixed" updates
 General`A hat is mentioned by name (not Lo-Fi)
 General`Medic is not mentioned
 General`Valve Time mentioned
+General`Title Time!
