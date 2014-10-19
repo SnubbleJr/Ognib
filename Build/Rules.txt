@@ -35,9 +35,8 @@ General`Title Time!
 General`Doug mentioned
 General`Someone asks for Lo-Fi in chat
 General`Bingo mentioned
-
-
-
-
 General`Updated localization files
 General`No update this week!
+
+
+
