@@ -264,12 +264,19 @@ function makeRulesList()
     yield getWebFile(path);
 #endif
 
-	for(var line in lines)
+	for(var line : String in lines)
 	{
+		if (line.length > 1)
+		{
 		yield parseRule(line);
 		if (rule != null)
 		{
 			ruleList.push(rule);
+		}
+		}
+		else
+		{
+		print("!");
 		}
 	}
 }
