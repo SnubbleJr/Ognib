@@ -33,3 +33,5 @@ General`Medic is not mentioned
 General`Valve Time mentioned
 General`Title Time!
 General`Doug mentioned
+General`Someone asks for hat in chat
+General`Bingo mentioned
