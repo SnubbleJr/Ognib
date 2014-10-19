@@ -33,7 +33,7 @@ General`Medic is not mentioned
 General`Valve Time mentioned
 General`Title Time!
 General`Doug mentioned
-General`Someone asks for hat in chat
+General`Someone asks for Lo-Fi in chat
 General`Bingo mentioned
 General`Updated localization files
 General`No update this week!
