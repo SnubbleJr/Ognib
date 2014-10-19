@@ -53,6 +53,8 @@ General`Host question choice of drink other host brought
 
 Here, it is simply, the Presenter assoicated with the rule, followed by the text, and that's it!
 
+NOTE: GITHUB WILL PUT A EMPTY LINE AT THE BOTTOM OF THE PAGE, REMOVE THAT EMPTY LINE OR IT WILL BREAK!
+
 Rememeber to use the ` key to sperate it! spaces around it is not needed, for adding classes, if you want to leave the picture null, just do ``
 
 `
