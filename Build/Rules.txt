@@ -30,10 +30,4 @@ General`4 or more hosts on the show
 General`"Fixed" updates
 General`A hat is mentioned by name (not Lo-Fi)
 General`Medic is not mentioned
-General`Valve Time mentioned
-General`Title Time!
-General`Doug mentioned
-General`Someone asks for hat in chat
-General`Bingo mentioned
-General`Updated localization files
-General`No update this week!
+
