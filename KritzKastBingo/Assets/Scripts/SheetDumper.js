@@ -268,15 +268,11 @@ function makeRulesList()
 	{
 		if (line.length > 1)
 		{
-		yield parseRule(line);
-		if (rule != null)
-		{
-			ruleList.push(rule);
-		}
-		}
-		else
-		{
-		print("!");
+			yield parseRule(line);
+			if (rule != null)
+			{
+				ruleList.push(rule);
+			}
 		}
 	}
 }
