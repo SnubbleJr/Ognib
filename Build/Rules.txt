@@ -28,4 +28,8 @@ General`"We're not even through the updates yet"
 General`4 or more hosts on the show
 General`"Fixed" updates
 General`A hat is mentioned by name (not Lo-Fi)
+<<<<<<< HEAD
 General`Medic is not mentioned
+=======
+General`Medic is not mentioned
+>>>>>>> 84816c24def9cc09a7710fc2d853e99d32e0389d
