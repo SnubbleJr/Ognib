@@ -4,6 +4,7 @@ Chronos`Chronos does his best Demoman impression
 RuskeyDoo`Sir Grey Impression
 RuskeyDoo`Ruskey Mentions textures, models, animations etc...
 Sir Grey`Sir Grey talks about trading
+Sir Grey`Sir Grey REALLY talks about trading
 Sir Grey`Sir Grey's "dapper-ness" or photography mentioned
 Tempest`Tempest appears
 Agro`Agro Drinks vodka again
@@ -32,7 +33,14 @@ General`Medic is not mentioned
 General`Valve Time mentioned
 General`Title Time!
 General`Doug mentioned
+<<<<<<< HEAD
 General`Someone asks for Lo-Fi in chat
 General`Bingo mentioned
 General`Updated localization files
 General`No update this week!
+=======
+General`Someone asks for hat in chat
+General`Bingo mentioned
+General`Updated localization files
+General`No update this week!
+>>>>>>> e14100a01c6f9d8cce96330446a9575f0d87e156
