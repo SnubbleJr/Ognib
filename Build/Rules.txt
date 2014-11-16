@@ -25,6 +25,7 @@ General`Host complains about a certain item
 General`Lo-Fi Longwave mentioned
 General`Butchered Username
 General`Attempt to speed up reading updates fails
+General`"TF2 is old"
 General`"We're not even through the updates yet"
 General`4 or more hosts on the show
 General`"Fixed" updates
