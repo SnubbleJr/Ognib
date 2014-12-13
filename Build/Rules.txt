@@ -37,10 +37,14 @@ General`Valve Time mentioned
 General`Title Time!
 General`Doug mentioned
 General`Someone asks for Lo-Fi in chat
-General`Bingo mentioned
+General`Bingo mentionedf
 General`Updated localization files
 General`No update this week!
 General`TF2 in holiday themed update
 General`rd_asteroid art pass
 General`tc_hydro!
 General`"Chat says we're wrong"
+General`"Bonus Ducks!"
+General`"The Ducks have moved!"
+General`Overwatch watch
+General`Festive feels
