@@ -12,11 +12,11 @@ function Update () {
 
 	if (state)
 	{
-		renderer.material.mainTexture = On;
+		GetComponent.<Renderer>().material.mainTexture = On;
 	}
 	else
 	{
-		renderer.material.mainTexture = Off;		
+		GetComponent.<Renderer>().material.mainTexture = Off;		
 	}
 }
 

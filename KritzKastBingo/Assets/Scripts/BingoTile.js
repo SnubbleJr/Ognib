@@ -34,14 +34,14 @@ function OnMouseDown ()
         stamp.active = true;
 		
 		if (SheetDumper.sfx)
-			audio.PlayOneShot(mouseD,1);
+			GetComponent.<AudioSource>().PlayOneShot(mouseD,1);
     }
 }
 
 function OnMouseUp () 
 {
 	if (SheetDumper.sfx)
-		audio.PlayOneShot(mouseU, 1);
+		GetComponent.<AudioSource>().PlayOneShot(mouseU, 1);
 }
 
 function OnMouseOver () 
@@ -55,7 +55,7 @@ function OnMouseOver ()
     if (!hovering)
     {
 		if (SheetDumper.sfx)
-			audio.PlayOneShot(mouseH,1);
+			GetComponent.<AudioSource>().PlayOneShot(mouseH,1);
         hovering = true;
     }
 }
@@ -70,8 +70,8 @@ public function setRule(rule : Rule, index : Vector2)
 {
     ruleText.GetComponent(TextMesh).text = rule.text;
     
-    avatarPic.renderer.material.mainTexture = rule.presenter.picture;
-    classPic.renderer.material.mainTexture = rule.presenter.clas.classIcon;
+    avatarPic.GetComponent.<Renderer>().material.mainTexture = rule.presenter.picture;
+    classPic.GetComponent.<Renderer>().material.mainTexture = rule.presenter.clas.classIcon;
     presText.GetComponent(TextMesh).text = rule.presenter.name;
 
     arrIndex = index;

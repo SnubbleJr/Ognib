@@ -23,7 +23,6 @@ var tileComplete : AudioClip;
 var rowComplete : AudioClip;
 var gameComplete : AudioClip;
 
-private var filePath : String;
 private var lines = Array();
 private var line : String;
 private var tex : Texture2D;
@@ -46,8 +45,6 @@ private var won = false;
 
 function Start ()
 {
-    filePath = Application.dataPath;
-
     yield applySettings();
 
     yield makeLists();
@@ -67,7 +64,7 @@ function makeLists()
 function getWebFile(path : String)
 {
 	var str : String;
-    var www : WWW = new WWW (path);
+    var www : WWW = new WWW ("http://snubblejr.github.io/Ognib/Build/" + path);
 
 	lines = Array();
 	
@@ -101,7 +98,7 @@ function getDiskFile(path : String)
 
 function getWebTex(path : String)
 {
-    var www : WWW = new WWW (path);
+    var www : WWW = new WWW ("http://snubblejr.github.io/Ognib/Build/" + path);
 
     yield www;
 	
@@ -117,13 +114,7 @@ function applySettings()
     var colRatio : float;
     var rowRatio : float;
 
-    var path : String = filePath + "/Settings.txt";
-	
-#if UNITY_EDITOR
-	yield getDiskFile(path);
-#elif UNITY_WEBPLAYER
-    yield getWebFile(path);
-#endif
+    yield getWebFile("Settings.txt");
 	
     if (lines.length > 0)
         cols = parseInt(lines[0].ToString());
@@ -150,6 +141,7 @@ function applySettings()
     {
         scale = rowRatio;
     }
+
 	yield;
 }
 
@@ -173,6 +165,7 @@ function makeTileList()
     tileList = arr1;
 			
 	applyActiveTiles();
+
     yield;
 }
 
@@ -211,13 +204,7 @@ function makeClassList()
 {    	
 	loadingPrint("Getting Class Info...");
 
-	var path : String = filePath + "/Classes.txt";
-	
-#if UNITY_EDITOR
-	yield getDiskFile(path);
-#elif UNITY_WEBPLAYER
-    yield getWebFile(path);
-#endif
+    yield getWebFile("Classes.txt");
 
 	for(var line in lines)
 	{
@@ -233,13 +220,7 @@ function makePresenterList()
 {    
 	loadingPrint("Getting Presenter Info...");
 
-    var path : String = filePath + "/Presenters.txt";
-	
-#if UNITY_EDITOR
-	yield getDiskFile(path);
-#elif UNITY_WEBPLAYER
-    yield getWebFile(path);
-#endif
+    yield getWebFile("Presenters.txt");
 
 	for(var line in lines)
 	{
@@ -255,14 +236,9 @@ function makeRulesList()
 {    
 	loadingPrint("Getting Rule Info...");
 
-    var path : String = filePath + "/Rules.txt";
 	rule = new Rule();
 	
-#if UNITY_EDITOR
-	yield getDiskFile(path);
-#elif UNITY_WEBPLAYER
-    yield getWebFile(path);
-#endif
+    yield getWebFile("Rules.txt");
 
 	for(var line : String in lines)
 	{
@@ -288,18 +264,12 @@ function parseClass(str : String)
 	
     if(subStr.length > 0)
     {
-		path = filePath + "/" + subStr[1];
-
-#if UNITY_EDITOR
-        tex = Resources.Load(subStr[1]);
-		yield;
-#elif UNITY_WEBPLAYER
-		yield getWebTex(path);
-#endif
+		yield getWebTex(subStr[1]);
 		
         clas.className = subStr[0];
         clas.classIcon = tex;
     }
+    yield;
 }
 
 function parsePresenter(str : String)
@@ -314,14 +284,8 @@ function parsePresenter(str : String)
     if(subStr.length >= 1)
     {	
         //if there's a pic file round here...
-		path = filePath + "/" + subStr[2];
 
-#if UNITY_EDITOR
-        tex = Resources.Load(subStr[2]);
-		yield;
-#elif UNITY_WEBPLAYER
-		yield getWebTex(path);
-#endif
+		yield getWebTex(subStr[2]);
 
         if (tex != null)
         {
@@ -331,6 +295,7 @@ function parsePresenter(str : String)
         presenter.name = subStr[0];
         presenter.clas = getClass(subStr[1]);
     }
+    yield;
 }
 
 function parseRule(str : String) : Rule
@@ -512,7 +477,7 @@ public function stampTile(tile : GameObject)
     tileList[indexY] = arr;
 	
 	if (sfx)
-		audio.PlayOneShot(tileComplete, .5*sfxScale);
+		GetComponent.<AudioSource>().PlayOneShot(tileComplete, .5*sfxScale);
 }
 
 function winCheck()
@@ -564,7 +529,7 @@ function rowCheck()
         tileList[completedRow] = arr;
 		
 		if (sfx)
-			audio.PlayOneShot(rowComplete,0.5*sfxScale);
+			GetComponent.<AudioSource>().PlayOneShot(rowComplete,0.5*sfxScale);
         completedRows++;
         completedRow = -1;
     }
@@ -575,7 +540,7 @@ function win()
     won = true;
 	
 	if (sfx)
-		audio.PlayOneShot(gameComplete,1.2*sfxScale);
+		GetComponent.<AudioSource>().PlayOneShot(gameComplete,1.2*sfxScale);
     Camera.main.gameObject.BroadcastMessage("showWin");
 }
 
